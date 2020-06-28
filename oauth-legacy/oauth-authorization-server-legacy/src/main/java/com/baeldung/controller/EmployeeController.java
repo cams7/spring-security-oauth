@@ -1,4 +1,4 @@
-package com.baeldung.config;
+package com.baeldung.controller;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,0 +1,13 @@
+server:
+  servlet:
+    context-path: /spring-security-oauth-resource
+  port: 8088
+spring:
+  h2:
+    console:
+      path: /h2
+      enabled: true
+      settings:
+        web-allow-others: true 
+#logging.level.org=INFO
+#endpoints.cors.allowed-origins=*

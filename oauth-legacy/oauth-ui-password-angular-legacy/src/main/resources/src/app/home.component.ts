@@ -16,13 +16,14 @@ import {AppService} from './app.service'
 export class HomeComponent {
  
     constructor(
-        private _service:AppService){}
+        private service: AppService
+    ){}
  
     ngOnInit(){
-        this._service.checkCredentials();
+        this.service.checkCredentials();
     }
  
     logout() {
-        this._service.logout();
+        this.service.logout();
     }
 }

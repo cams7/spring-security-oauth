@@ -4,7 +4,7 @@ import {AppService} from './app.service'
 @Component({
     selector: 'home-header',
     providers: [AppService],
-  template: `<div class="container" >
+    template: `<div class="container" >
     <button *ngIf="!isLoggedIn" class="btn btn-primary" (click)="login()" type="submit">Login</button>
     <div *ngIf="isLoggedIn" class="content">
         <span>Welcome !!</span>
@@ -16,24 +16,31 @@ import {AppService} from './app.service'
 })
  
 export class HomeComponent {
-     public isLoggedIn = false;
+    private _isLoggedIn = false;
 
     constructor(
-        private _service:AppService){}
+        private service: AppService
+    ){}
  
     ngOnInit(){
-        this.isLoggedIn = this._service.checkCredentials();    
-        let i = window.location.href.indexOf('code');
-        if(!this.isLoggedIn && i != -1){
-            this._service.retrieveToken(window.location.href.substring(i + 5));
+        this._isLoggedIn = this.service.isLoggedIn();    
+        const i = window.location.href.indexOf('code');
+        if(!this.isLoggedIn && i != -1) {
+            const code = window.location.href.substring(i + 5);
+            console.log(`Access code: ${code}`);
+            this.service.retrieveToken(code);
         }
     }
 
     login() {
-        window.location.href = 'http://localhost:8081/spring-security-oauth-server/oauth/authorize?response_type=code&client_id=' + this._service.clientId + '&redirect_uri='+ this._service.redirectUri;
+        window.location.href = `http://localhost:8081/spring-security-oauth-server/oauth/authorize?response_type=code&client_id=${this.service.clientId}&redirect_uri=${this.service.redirectUri}`;
     }
  
     logout() {
-        this._service.logout();
+        this.service.logout();
+    }
+
+    get isLoggedIn() {
+        return this._isLoggedIn;
     }
 }

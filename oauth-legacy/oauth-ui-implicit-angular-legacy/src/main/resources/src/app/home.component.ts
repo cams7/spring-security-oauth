@@ -19,17 +19,18 @@ export class HomeComponent {
     public isLoggedIn = false;
 
     constructor(
-        private _service:AppService){}
+        private service:AppService
+    ){}
     
-    ngOnInit(){
-        this.isLoggedIn = this._service.isLoggedIn();
+    ngOnInit() {
+        this.isLoggedIn = this.service.isLoggedIn();
     }
 
     login() {
-        this._service.obtainAccessToken();
+        this.service.obtainAccessToken();
     }
 
     logout() {
-        this._service.logout();
+        this.service.logout();
     }
 }

@@ -21,11 +21,16 @@ import {AppService} from './app.service'
     </div>`
 })
 export class LoginComponent {
-    public loginData = {username: "", password: ""};
+    public loginData = {
+        username: "", 
+        password: ""
+    };
 
-    constructor(private _service:AppService) {}
+    constructor(
+        private service: AppService
+    ) {}
  
     login() {
-        this._service.obtainAccessToken(this.loginData);
+        this.service.obtainAccessToken(this.loginData);
     }
 }

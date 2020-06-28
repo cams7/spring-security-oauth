@@ -16,8 +16,15 @@ import { FooComponent } from './foo.component';
   imports: [
     BrowserModule,
     HttpClientModule,
-    RouterModule.forRoot([
-     { path: '', component: HomeComponent, pathMatch: 'full' }], {onSameUrlNavigation: 'reload'})
+    RouterModule.forRoot(
+      [{ 
+        path: '', 
+        component: HomeComponent, pathMatch: 'full' 
+      }], 
+      {
+        onSameUrlNavigation: 'reload'
+      }
+    )
   ],
   providers: [],
   bootstrap: [AppComponent]

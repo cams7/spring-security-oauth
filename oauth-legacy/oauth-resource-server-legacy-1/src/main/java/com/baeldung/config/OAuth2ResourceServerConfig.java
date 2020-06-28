@@ -1,7 +1,6 @@
 package com.baeldung.config;
 
 import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -15,53 +14,65 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
-//@Configuration
-//@PropertySource({ "classpath:persistence.properties" })
-//@EnableResourceServer
+// @Configuration
+// @PropertySource({ "classpath:persistence.properties" })
+// @EnableResourceServer
 public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-    @Autowired
-    private Environment env;
+  @Autowired
+  private Environment env;
 
-    //
+  // JDBC token store configuration
 
-    @Override
-    public void configure(final HttpSecurity http) throws Exception {
-        // @formatter:off
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-		    .and()
-		    .authorizeRequests().anyRequest().permitAll();
+  @Bean
+  public DataSource dataSource() {
+    final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
+    dataSource.setUrl(env.getProperty("jdbc.url"));
+    dataSource.setUsername(env.getProperty("jdbc.user"));
+    dataSource.setPassword(env.getProperty("jdbc.pass"));
+    return dataSource;
+  }
+
+  @Autowired
+  private DataSource dataSource;
+
+  @Bean
+  public TokenStore tokenStore() {
+    return new JdbcTokenStore(dataSource);
+  }
+
+  @Autowired
+  private TokenStore tokenStore;
+
+  @Bean
+  @Primary
+  public DefaultTokenServices tokenServices() {
+    final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+    defaultTokenServices.setTokenStore(tokenStore);
+    return defaultTokenServices;
+  }
+
+  @Autowired
+  private DefaultTokenServices tokenServices;
+
+  //
+
+  @Override
+  public void configure(final HttpSecurity http) throws Exception {
+    // @formatter:off
+    http
+      .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+      .and()
+      .authorizeRequests()
+        .anyRequest().permitAll();
 	// @formatter:on		
-    }
+  }
 
-    @Override
-    public void configure(final ResourceServerSecurityConfigurer config) {
-        config.tokenServices(tokenServices());
-    }
-
-    @Bean
-    @Primary
-    public DefaultTokenServices tokenServices() {
-        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore());
-        return defaultTokenServices;
-    }
-
-    // JDBC token store configuration
-
-    @Bean
-    public DataSource dataSource() {
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
-        dataSource.setUrl(env.getProperty("jdbc.url"));
-        dataSource.setUsername(env.getProperty("jdbc.user"));
-        dataSource.setPassword(env.getProperty("jdbc.pass"));
-        return dataSource;
-    }
-
-    @Bean
-    public TokenStore tokenStore() {
-        return new JdbcTokenStore(dataSource());
-    }
+  @Override
+  public void configure(final ResourceServerSecurityConfigurer config) {
+    config.tokenServices(tokenServices);
+  }
 
 }
