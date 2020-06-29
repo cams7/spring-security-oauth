@@ -16,7 +16,7 @@ export class AppService {
     private http: HttpClient
   ){}
 
-  retrieveToken(code: string){
+  retrieveToken(ssoUri: string, code: string){
     let params = new URLSearchParams();   
     params.append('grant_type','authorization_code');
     params.append('client_id', this.clientId);
@@ -28,7 +28,7 @@ export class AppService {
       'Authorization': `Basic ${btoa(`${this.clientId}:${this.clientSecret}`)}` 
     });
     this.http.post(
-      'http://localhost:8081/spring-security-oauth-server/oauth/token', 
+      `${ssoUri}/oauth/token`, 
       params.toString(), 
       { 
         headers: headers 
@@ -67,7 +67,7 @@ export class AppService {
       }
     ).pipe(
       catchError(error => {
-        const errorMessage = error.json().error || 'Server error';
+        const errorMessage = error || 'Server error';
         console.error('getResource: ', errorMessage);
         return throwError(errorMessage);
       })
@@ -79,13 +79,12 @@ export class AppService {
     return accessToken;
   }
 
-  logout() {
+  logout(ssoUri: string) {
     Cookie.delete(ACCESS_TOKEN);
-    window.location.reload();
-    //window.location.href = `http://localhost:8081/spring-security-oauth-server/logout`;
+    //window.location.reload();
+    window.location.href = `${ssoUri}/logout`;
   }
 }
-
 
 export class Foo {
   constructor(

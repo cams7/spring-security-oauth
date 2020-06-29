@@ -38,7 +38,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	  .and()
 	  .withUser("admin")
 	    .password(passwordEncoder.encode("nimda"))
-	    .roles("ADMIN");
+	    .roles("ADMIN")
+	  .and()
+	  .withUser("department1")
+        .password(passwordEncoder.encode("abc123"))
+        .roles("READ_DEPARTMENT")
+      .and()
+	  .withUser("employee1")
+	    .password(passwordEncoder.encode("abc123"))
+	    .roles("READ_EMPLOYEE");
     }// @formatter:on
 
   @Override
@@ -56,9 +64,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	  .antMatchers("/oauth/token/revokeById/**", "/tokens/**", "/h2/**").permitAll()
 	  .anyRequest().authenticated()
 	  .and()
-	  .formLogin().permitAll()
-	  .and()
-      .logout().permitAll();
+	  .formLogin().permitAll();
+//	  .and()
+//      .logout()
+//        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//        .logoutSuccessUrl("/login")
+//        .invalidateHttpSession(true)
+//        .deleteCookies("JSESSIONID");
 	// @formatter:on
   }
 
