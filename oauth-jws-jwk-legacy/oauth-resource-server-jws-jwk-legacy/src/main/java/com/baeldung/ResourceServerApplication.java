@@ -8,8 +8,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableResourceServer
 public class ResourceServerApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ResourceServerApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(ResourceServerApplication.class, args);
+  }
 
 }
